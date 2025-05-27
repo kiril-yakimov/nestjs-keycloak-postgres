@@ -1,0 +1,79 @@
+services:
+  nginx:
+    build:
+      context: ${APP_PATH:-.}/
+      dockerfile: .dev/nginx/Dockerfile
+    container_name: nginx
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ${APP_PATH:-.}/.dev/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
+      - ${APP_PATH:-.}/.dev/ssl:/etc/ssl/certs
+      - ${APP_PATH:-.}/.dev/ssl:/etc/ssl/private
+    depends_on:
+      - keycloak
+      - nestjs
+
+  nestjs:
+    build:
+      context: ${APP_PATH:-.}/
+      dockerfile: ./.dev/node/development/Dockerfile
+    env_file:
+      - ${APP_PATH:-.}/.env
+    volumes:
+      - ${APP_PATH:-.}/:/app:cached
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: unless-stopped
+    tty: true
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    volumes:
+      - ${APP_PATH:-.}/.dev/.volumes/postgres-data:/var/lib/postgresql/data
+
+  keycloak:
+    image: keycloak/keycloak:26.1
+    container_name: keycloak
+    command: ["start-dev"]
+    environment:
+      KC_LOG_LEVEL: INFO
+      KC_FEATURES: token-exchange,dpop
+      KC_HOSTNAME_URL: http://auth.int:8080
+      KEYCLOAK_ADMIN: ${KEYCLOAK_USERNAME}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_USER_PASSWORD}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./docker/.volumes/keycloak-data:/opt/keycloak/data:cached
+      - ${KEYCLOAK_THEMES_PATH:-.}:/opt/keycloak/themes:cached
+      - ${KEYCLOAK_PLUGINS_PATH:-.}:/opt/keycloak/providers
+
+  redis:
+    image: redis:alpine
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data: {}
