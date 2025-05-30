@@ -4,7 +4,7 @@ FROM nginx:alpine
 RUN rm /etc/nginx/conf.d/default.conf
 
 # Copy the server block configuration files to the container
-COPY ./docker/nginx/nginx.conf /etc/nginx/conf.d/
+COPY ./.dev/nginx/nginx.conf /etc/nginx/conf.d/
 
 # Expose ports 80 and 443
 EXPOSE 80 443

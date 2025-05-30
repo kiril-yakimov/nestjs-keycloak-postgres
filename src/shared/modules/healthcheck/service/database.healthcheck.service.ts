@@ -1,20 +1,23 @@
+import { MikroORM } from '@mikro-orm/core';
 import { Injectable } from '@nestjs/common';
-import { HealthCheckError, HealthIndicator, HealthIndicatorResult } from '@nestjs/terminus';
-import { EntityManager } from '@mikro-orm/core';
+import { HealthIndicatorService } from '@nestjs/terminus';
 
 @Injectable()
-export class DatabaseHealthCheckService extends HealthIndicator {
-    public constructor(private readonly em: EntityManager) {
-        super();
-    }
+export class DatabaseHealthCheckService {
+    public constructor(
+        private readonly orm: MikroORM,
+        private readonly healthIndicatorService: HealthIndicatorService,
+    ) {}
 
-    public async isHealthy(): Promise<HealthIndicatorResult> {
-        const isConnected = await this.em.getConnection().isConnected();
+    public async isHealthy() {
+        const indicator = this.healthIndicatorService.check('database');
 
-        if (!isConnected) {
-            throw new HealthCheckError('Database is down.', isConnected);
+        const isHealthy = await this.orm.isConnected();
+
+        if (!isHealthy) {
+            return indicator.down({ message: 'Database is not connected' });
         }
 
-        return this.getStatus('database', isConnected);
+        return indicator.up({ message: 'Database is connected' });
     }
 }

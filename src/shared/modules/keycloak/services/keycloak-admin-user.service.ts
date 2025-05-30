@@ -1,13 +1,9 @@
+import { KEYCLOAK_CONFIG_KEY, KeycloakConfig } from '@api/config';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
-import {
-    KEYCLOAK_CONFIG_KEY,
-    KeycloakConfigInterface,
-    KeycloakUserInterface,
-    KeycloakUserRoleInterface,
-} from '../types';
+import { KeycloakUserInterface, KeycloakUserRoleInterface } from '../types';
 import { KeycloakAdminAuthService } from './keycloak-admin-auth.service';
 
 @Injectable()
@@ -169,7 +165,7 @@ export class KeycloakAdminUserService {
     ): Promise<void> {
         const { authUrl, realm } = this.getConfigData();
 
-        const response = await firstValueFrom(
+        await firstValueFrom(
             this.httpService.post(
                 `${authUrl}/admin/realms/${realm}/users/${keycloakUserId}/role-mappings/realm`,
                 [realmRoleToAssign],
@@ -183,7 +179,7 @@ export class KeycloakAdminUserService {
     public async deleteRealmRoleToUser(keycloakUserId: string, roleToDelete: KeycloakUserRoleInterface): Promise<void> {
         const { authUrl, realm } = this.getConfigData();
 
-        const response = await firstValueFrom(
+        await firstValueFrom(
             this.httpService.delete(`${authUrl}/admin/realms/${realm}/users/${keycloakUserId}/role-mappings/realm`, {
                 data: [roleToDelete],
                 headers: await this.generateHeaders(),
@@ -212,7 +208,7 @@ export class KeycloakAdminUserService {
      * @private
      */
     private getConfigData() {
-        return this.configService.get<KeycloakConfigInterface>(KEYCLOAK_CONFIG_KEY);
+        return this.configService.get<KeycloakConfig>(KEYCLOAK_CONFIG_KEY);
     }
 
     /**

@@ -26,9 +26,7 @@ import { DatabaseConfigInterface } from './types';
                     charset: dbConfig.charset || mikroConfig.charset,
                     collate: dbConfig.collate || mikroConfig.collate,
                     debug: environment !== ENVIRONMENTS.PRODUCTION,
-                    discovery: {
-                        requireEntitiesArray: false,
-                    },
+                    discovery: mikroConfig.discovery, // Use the existing discovery setup
                     entities: mikroConfig.entities, // Use the existing entity setup
                     // resultCache: {
                     //     adapter: RedisCacheAdapter,

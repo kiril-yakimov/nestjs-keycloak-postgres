@@ -1,11 +1,13 @@
-import { Global, Module, Provider } from '@nestjs/common';
-import { DatabaseHealthCheckService } from './service/database.healthcheck.service';
+import { Module } from '@nestjs/common';
+import { TerminusModule } from '@nestjs/terminus';
+import { AppCacheModule } from '../cache/cache.module';
+import { DatabaseModule } from '../database/database.module';
+import { HealthCheckController } from './http/healthcheck.controller';
+import { CacheHealthCheckService, DatabaseHealthCheckService } from './service';
 
-const providers: Provider[] = [DatabaseHealthCheckService];
-
-@Global()
 @Module({
-    providers: [...providers],
-    exports: [...providers],
+    imports: [AppCacheModule, DatabaseModule, TerminusModule],
+    controllers: [HealthCheckController],
+    providers: [DatabaseHealthCheckService, CacheHealthCheckService],
 })
 export class HealthCheckModule {}
