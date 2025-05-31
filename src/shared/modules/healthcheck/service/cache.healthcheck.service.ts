@@ -14,7 +14,7 @@ export class CacheHealthCheckService {
         const indicator = this.healthIndicatorService.check('cache');
 
         try {
-            await this.cacheManager.set('healthcheck', true, 5);
+            await this.cacheManager.set('healthcheck', true);
             const isHealthy: boolean = await this.cacheManager.get('healthcheck');
 
             if (!isHealthy) {

@@ -21,18 +21,14 @@ fi
 
 echo "Creating self-signed certificate valid for $valid days for domain $domain"
 
-# Note that this will also create any intermediate directories that don't exist
-mkdir -p "./.dev/ssl/private/"
-mkdir -p "./.dev/ssl/certs/"
-
 # Generate the SSL certificates
 openssl req -x509 \
   -nodes \
   -subj "/CN=$domain" \
   -addext "subjectAltName=DNS:$domain" \
   -days $valid \
-  -newkey rsa:2048 -keyout .dev/ssl/private/$name.key \
-  -out .dev/ssl/certs/$name.crt
+  -newkey rsa:2048 -keyout .dev/ssl/$name.key \
+  -out .dev/ssl/$name.crt
 
 echo "Certificate generation completed."
 

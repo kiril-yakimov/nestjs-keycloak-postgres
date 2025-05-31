@@ -10,8 +10,7 @@ services:
       - "443:443"
     volumes:
       - ${APP_PATH:-.}/.dev/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
-      - ${APP_PATH:-.}/.dev/ssl/certs:/etc/ssl/certs
-      - ${APP_PATH:-.}/.dev/ssl/private:/etc/ssl/private
+      - ${APP_PATH:-.}/.dev/ssl:/etc/ssl
     depends_on:
       - keycloak
       - nestjs
