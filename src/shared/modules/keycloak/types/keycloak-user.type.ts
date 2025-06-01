@@ -7,18 +7,18 @@ export type KeycloakUserInterface = {
     emailVerified?: boolean;
     attributes?: KeycloakUserAttributesInterface;
     credentials?: KeycloakUserCredentialsInterface[];
-}
+};
 
 export type KeycloakUserAttributesInterface = {
-    hw_id: string;
+    api_user_id: string;
     locale?: string[];
-}
+};
 
 export type KeycloakUserCredentialsInterface = {
     type: string;
-    value: string
+    value: string;
     temporary?: boolean;
-}
+};
 
 export type KeycloakUserRoleInterface = {
     id: string;
@@ -27,4 +27,4 @@ export type KeycloakUserRoleInterface = {
     composite: boolean;
     clientRole: boolean;
     containerId: string;
-}
+};

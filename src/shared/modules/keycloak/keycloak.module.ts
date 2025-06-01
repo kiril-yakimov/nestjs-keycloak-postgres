@@ -11,9 +11,13 @@ import {
     RoleGuard,
     TokenValidation,
 } from 'nest-keycloak-connect';
-import { KeycloakAdminAuthService, KeycloakAdminUserService } from './services';
+import {
+    KeycloakAdminAuthService,
+    KeycloakAdminUserService,
+    KeycloakCreateUserBuilderService,
+} from './services';
 
-const sharedProviders: Provider[] = [KeycloakAdminUserService];
+const sharedProviders: Provider[] = [KeycloakAdminUserService, KeycloakCreateUserBuilderService];
 
 const providers: Provider[] = [
     {
