@@ -7,7 +7,7 @@ WORKDIR /app
 # Install dependencies
 RUN yarn add -g @nestjs/cli \
     @mikro-orm/cli \
-    @mikro-orm/mysql
+    @mikro-orm/postgresql
 
 # Serve the app
 CMD ["sh", "-c", "yarn install && yarn build && yarn run start:dev"]

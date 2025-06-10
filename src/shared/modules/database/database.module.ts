@@ -13,7 +13,8 @@ import { DatabaseConfigInterface } from './types';
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: (config: ConfigService): any => {
-                const dbConfig: DatabaseConfigInterface = config.get<DatabaseConfigInterface>(DATABASE_CONFIG_KEY);
+                const dbConfig: DatabaseConfigInterface =
+                    config.get<DatabaseConfigInterface>(DATABASE_CONFIG_KEY);
                 const { environment } = config.get<AppConfig>(APP_CONFIG_KEY);
 
                 return {
@@ -28,6 +29,7 @@ import { DatabaseConfigInterface } from './types';
                     debug: environment !== ENVIRONMENTS.PRODUCTION,
                     discovery: mikroConfig.discovery, // Use the existing discovery setup
                     entities: mikroConfig.entities, // Use the existing entity setup
+                    forceUtcTimezone: true,
                     // resultCache: {
                     //     adapter: RedisCacheAdapter,
                     //     options: {

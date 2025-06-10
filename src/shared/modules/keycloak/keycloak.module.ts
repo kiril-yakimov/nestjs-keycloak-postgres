@@ -3,9 +3,11 @@ import { HttpModule } from '@nestjs/axios';
 import { Global, Module, Provider } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { Agent } from 'https';
 import {
     AuthGuard,
     KeycloakConnectModule,
+    KeycloakConnectOptions,
     PolicyEnforcementMode,
     ResourceGuard,
     RoleGuard,
@@ -14,10 +16,15 @@ import {
 import {
     KeycloakAdminAuthService,
     KeycloakAdminUserService,
+    KeycloakAuthUserService,
     KeycloakCreateUserBuilderService,
 } from './services';
 
-const sharedProviders: Provider[] = [KeycloakAdminUserService, KeycloakCreateUserBuilderService];
+const sharedProviders: Provider[] = [
+    KeycloakAdminUserService,
+    KeycloakAuthUserService,
+    KeycloakCreateUserBuilderService,
+];
 
 const providers: Provider[] = [
     {
@@ -37,12 +44,20 @@ const providers: Provider[] = [
 @Global()
 @Module({
     imports: [
-        HttpModule,
+        HttpModule.registerAsync({
+            useFactory: () => ({
+                httpsAgent: new Agent({
+                    rejectUnauthorized: false, // or load custom cert here
+                }),
+            }),
+        }),
         ConfigModule,
         KeycloakConnectModule.registerAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
-            useFactory: (config: ConfigService): any => {
+            useFactory: (
+                config: ConfigService,
+            ): Promise<KeycloakConnectOptions> | KeycloakConnectOptions => {
                 const keycloakConfig = config.get<KeycloakConfig>(KEYCLOAK_CONFIG_KEY);
 
                 return {

@@ -35,12 +35,19 @@ export class KeycloakAdminUserService {
      * @param keycloakUserId
      * @param userUpdateData
      */
-    public async updateUser(keycloakUserId: string, userUpdateData: KeycloakUserInterface): Promise<void> {
+    public async updateUser(
+        keycloakUserId: string,
+        userUpdateData: KeycloakUserInterface,
+    ): Promise<void> {
         const { authUrl, realm } = this.getConfigData();
         await firstValueFrom(
-            this.httpService.put(`${authUrl}/admin/realms/${realm}/users/${keycloakUserId}`, userUpdateData, {
-                headers: await this.generateHeaders(),
-            }),
+            this.httpService.put(
+                `${authUrl}/admin/realms/${realm}/users/${keycloakUserId}`,
+                userUpdateData,
+                {
+                    headers: await this.generateHeaders(),
+                },
+            ),
         );
     }
 
@@ -64,7 +71,9 @@ export class KeycloakAdminUserService {
         const { authUrl, realm } = this.getConfigData();
 
         const response = await firstValueFrom(
-            this.httpService.get(`${authUrl}/realms/${realm}/authorisation-server/get-deferred-token`),
+            this.httpService.get(
+                `${authUrl}/realms/${realm}/authorisation-server/get-deferred-token`,
+            ),
         );
 
         return response.data?.deferred_token ?? null;
@@ -132,7 +141,9 @@ export class KeycloakAdminUserService {
      *
      * @param keycloakUserId
      */
-    public async getUserAvailableRoles(keycloakUserId: string): Promise<KeycloakUserRoleInterface[]> {
+    public async getUserAvailableRoles(
+        keycloakUserId: string,
+    ): Promise<KeycloakUserRoleInterface[]> {
         const { authUrl, realm } = this.getConfigData();
 
         const response = await firstValueFrom(
@@ -151,9 +162,12 @@ export class KeycloakAdminUserService {
         const { authUrl, realm } = this.getConfigData();
 
         const response = await firstValueFrom(
-            this.httpService.get(`${authUrl}/admin/realms/${realm}/users/${keycloakUserId}/role-mappings/realm`, {
-                headers: await this.generateHeaders(),
-            }),
+            this.httpService.get(
+                `${authUrl}/admin/realms/${realm}/users/${keycloakUserId}/role-mappings/realm`,
+                {
+                    headers: await this.generateHeaders(),
+                },
+            ),
         );
 
         return response.data;
@@ -176,14 +190,20 @@ export class KeycloakAdminUserService {
         );
     }
 
-    public async deleteRealmRoleToUser(keycloakUserId: string, roleToDelete: KeycloakUserRoleInterface): Promise<void> {
+    public async deleteRealmRoleToUser(
+        keycloakUserId: string,
+        roleToDelete: KeycloakUserRoleInterface,
+    ): Promise<void> {
         const { authUrl, realm } = this.getConfigData();
 
         await firstValueFrom(
-            this.httpService.delete(`${authUrl}/admin/realms/${realm}/users/${keycloakUserId}/role-mappings/realm`, {
-                data: [roleToDelete],
-                headers: await this.generateHeaders(),
-            }),
+            this.httpService.delete(
+                `${authUrl}/admin/realms/${realm}/users/${keycloakUserId}/role-mappings/realm`,
+                {
+                    data: [roleToDelete],
+                    headers: await this.generateHeaders(),
+                },
+            ),
         );
     }
 

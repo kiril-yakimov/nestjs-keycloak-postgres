@@ -1,11 +1,24 @@
 import { UserModule } from '@api/modules/user/user.module';
 import { KeycloakModule } from '@api/shared/modules/keycloak/keycloak.module';
 import { Module } from '@nestjs/common';
-import { AppleController, GoogleController, LoginController, RegisterController } from './http';
+import { CqrsModule } from '@nestjs/cqrs';
+import {
+    AppleController,
+    GoogleController,
+    LoginController,
+    RefreshController,
+    RegisterController,
+} from './http';
 
 @Module({
-    imports: [UserModule, KeycloakModule],
-    controllers: [AppleController, GoogleController, LoginController, RegisterController],
+    imports: [CqrsModule, UserModule, KeycloakModule],
+    controllers: [
+        AppleController,
+        GoogleController,
+        LoginController,
+        RefreshController,
+        RegisterController,
+    ],
     providers: [],
 })
 export class AuthModule {}

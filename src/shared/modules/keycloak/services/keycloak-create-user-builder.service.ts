@@ -10,7 +10,6 @@ export class KeycloakCreateUserBuilderService {
         } as KeycloakUserAttributesInterface;
 
         return {
-            username: userDto.username,
             email: userDto.email,
             enabled: true,
             attributes,
