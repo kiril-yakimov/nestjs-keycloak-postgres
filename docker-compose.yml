@@ -24,6 +24,8 @@ services:
       - ${APP_PATH:-.}/.env
     volumes:
       - ${APP_PATH:-.}/:/app:cached
+    extra_hosts:
+      - ${KEYCLOAK_EXTRA_HOST}:host-gateway
     stdin_open: true
     tty: true
     ports:

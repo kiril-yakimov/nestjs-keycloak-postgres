@@ -1,14 +1,17 @@
 import { LOGGER } from '@api/shared/modules/logger/constants';
 import { GlobalValidationPipe } from '@api/shared/pipes';
-import { HttpStatus, ShutdownSignal, UnprocessableEntityException, VersioningType } from '@nestjs/common';
+import {
+    HttpStatus,
+    ShutdownSignal,
+    UnprocessableEntityException,
+    VersioningType,
+} from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { useContainer, ValidationError } from 'class-validator';
-import compression from 'compression';
-import cookieParser from 'cookie-parser';
 import { AppHttpExceptionFilter } from './app-http-exception.filter';
 import { AppModule } from './app.module';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
     const app = await NestFactory.create(AppModule);
 
     app.enableVersioning({
@@ -27,8 +30,6 @@ async function bootstrap() {
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
         credentials: true,
     });
-    app.use(cookieParser());
-    app.use(compression());
 
     app.useGlobalPipes(
         new GlobalValidationPipe({
@@ -42,7 +43,8 @@ async function bootstrap() {
                 const flattenValidationErrors = (validationErrors: ValidationError[]) => {
                     return validationErrors.reduce((acc, error) => {
                         if (error.constraints) {
-                            acc[error.property] = error.constraints[Object.keys(error.constraints)[0]];
+                            acc[error.property] =
+                                error.constraints[Object.keys(error.constraints)[0]];
                         }
 
                         if (error.children && error.children.length > 0) {
@@ -72,7 +74,7 @@ async function bootstrap() {
     useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
     // createSwaggerConfig(app);
-
+    //
     // const config = app.get(ConfigService);
     // app.useWebSocketAdapter(
     //   createRedisAdaptorInstance(app, config.get<RedisConfigInterface>('redis'))
